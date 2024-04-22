@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Random Spawn</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script defer src="https://unpkg.com/p5.collide2d"></script>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        canvas {
+            display: block;
+        }
+        #score {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            background-color: rgb(0, 0, 0);
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+        #lives {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            background-color: rgb(0, 0, 0);
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+        #container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(0,0,0,0.5);
+            width: 125px;
+            height: 100px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        #display {
+            color: black;
+        }
+        button {
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <button onclick="easier()"><</button>
+        <div id="display"></div>
+        <button onclick="harder()">></button>
+    </div>
+    <div id="lives">Lives: 5</div>
+    <div id="score">Score: 0</div>
+    <script>
+        let w = window.innerWidth;
+        let h = window.innerHeight * 0.85;
+        let lastOccurrence = 0;
+        let cooldown = 5000;
+        let colorDuration = 500;
+        let blueDuration = 3000;
+        let cPositions = [
+            { x: w / 2.4, y: h / 1.9 },
+            { x: w / 10, y: h / 6 },
+            { x: w / 5, y: h / 2.5 },
+            { x: w / 1.1, y: h / 1.2 },
+            { x: w / 1.05, y: h / 11 },
+            { x: w / 1.3, y: h / 3.5 },
+            { x: w / 1.12, y: h / 1.7 },
+            { x: w / 1.37, y: h / 1.38 },
+            { x: w / 11.8, y: h / 1.4 },
+            { x: w / 4.8, y: h / 1.2 },
+            { x: w / 1.9, y: h / 1.11 },
+            { x: w / 1.55, y: h / 11 },
+            { x: w / 1.6, y: h / 1.75 },
+            { x: w / 2.8, y: h / 7.5 }
+        ];
+        let coloredCircle = -1;
+        let ellipseSize = 100;
+        let malletD = 75;
+        let malletX;
+        let malletY;
+        let score = 0;
+        let addtoScore = 1;
+        let lives = 5;
+
+        let level = 1;
+        function easier() {
+            if (level > 1) {
+                level--;
+            }
+        }
+
+        function harder() {
+            if (level < 5) {
+                level++;
+            }
+        }
+
+        function setup() {
+            createCanvas(w, h);
+        }
+
+        function mallet() {
+            fill("brown");
+            malletX = mouseX;
+            malletY = mouseY
+            circle(malletX, malletY, malletD);
+        }
+
+        function collideCircleEllipse(malletX, malletY, malletD, chosenX, chosenY, ellipseSize) {
+            let closestX = constrain(malletX, chosenX - ellipseSize / 2, malletX + ellipseSize / 2);
+            let closestY = constrain(malletY, chosenY - ellipseSize / 2, malletY + ellipseSize / 2);
+
+            let distanceX = malletX - closestX;
+            let distanceY = malletY - closestY;
+
+            let distanceSquared = (distanceX * distanceX) + (distanceY * distanceY)
+            return distanceSquared < (malletD * malletD)
+        }
+        //Automatically collects the cookie if that chute is chosen
+        function trap() {
+
+        }
+        //Makes everything slower for the next 10 seconds. 
+        function freeze() {
+
+        }
+        //Make it so that the next cookie comes to a certain area.
+        function lure() {
+
+        }
+        //Collects all cookies on the screen for you
+        function nuke() {
+            
+        }
+        
+
+        function draw() {
+            document.getElementById("display").innerText = "Level: " + level;
+            let chosenX;
+            let chosenY;
+            if (coloredCircle !== -1) {
+                chosenX = cPositions[coloredCircle].x;
+                chosenY = cPositions[coloredCircle].y;
+            }
+
+            clear();
+            fill("red");
+            for (let i = 0; i < cPositions.length; i++) {
+                ellipse(cPositions[i].x, cPositions[i].y, ellipseSize);
+            }
+
+            let collision = collideCircleEllipse(malletX, malletY, malletD, chosenX, chosenY, ellipseSize);
+
+            if (coloredCircle !== -1) {
+                if (millis() - lastOccurrence > colorDuration + blueDuration) {
+                    fill("red");
+                    ellipse(cPositions[coloredCircle].x, cPositions[coloredCircle].y, ellipseSize);
+                    coloredCircle = -1;
+                    lives--;
+                    document.getElementById("lives").innerText = "Lives: " + lives;
+                    if (lives === 0) {
+                        // Game over logic can be added here
+                    }
+                } else if (mouseIsPressed && collision) {
+                    fill("red");
+                    ellipse(cPositions[coloredCircle].x, cPositions[coloredCircle].y, ellipseSize);
+                    score += addtoScore;
+                    document.getElementById("score").innerText = "Score: " + score;
+                    coloredCircle = -1;
+                }
+            }
+
+            if (millis() - lastOccurrence > cooldown) {
+                coloredCircle = floor(random(14));
+                lastOccurrence = millis();
+            }
+
+            if (coloredCircle !== -1 && millis() - lastOccurrence > colorDuration) {
+                fill("blue");
+                ellipse(cPositions[coloredCircle].x, cPositions[coloredCircle].y, 100);
+            }
+            
+            mallet();
+        }
+    </script>
+</body>
+</html>
