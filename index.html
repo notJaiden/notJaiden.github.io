@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Page</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-repeat: no-repeat;
+            background-size: cover;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+        button {
+            margin-left: 45%;
+            height: 6vh;
+            width: 11vw;
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 30px;
+            background: #D9BE91;
+            color: #84563C;
+            border-color: #84563C;
+            border-width: 3.5px;
+        }
+        #bg {
+            height: 80%;
+            width: auto;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <img id = "bg" src="Gstartpagebg.png"></img>
+    <!-- <button id="pButton" onclick="start()">Start</button>
+    <button id="tButton" onclick="tutorial()">Tutorial</button>
+    <button id="sButton" onclick="store()">Store</button> -->
+    <script>
+        function start() {
+            window.location.href = "random spawn.html";
+        }   
+        function store() {
+            window.location.href = "store.html";
+        }
+        function tutorial() {
+            window.location.href = "tutorial.html";
+        }
+    </script>
+</body>
+</html>
