@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Power Mole Mania</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script defer src="https://unpkg.com/p5.collide2d"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"
+    integrity="sha512-uaz5GpnQoE6t5echKlX8P52czvsIGgLPcvlzfvRubLZ1Hp8JemUDnbUiAahbVtPb+jUVrNETuXvAhDDF/
+    N3M4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/addons/p5.sound.min.js"
+    integrity="sha512-WzkwpdWEMAY/W8WvP9KS2/VI6zkgejR4/KTxTl4qHx0utqeyVE0JY+S1DlMu×DChC7x0oXtk/ESji6a01P/
+    Tdg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- <script src="https://cdnjs "
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/addons/p5.sound.min.js" integrity="sha512-WzkwpdWEMAY/W8WvP9KS2/VI6zkgejR4/KTxTl4qHx0utqeyVE0JY+S1DLMuxDChC7x0oXtk/ESji6a0lP/Tdg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            background-image: url(grass_bg.png);
+        }
+        #score {
+            position: absolute;
+            top: 6%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 30px;
+            font-weight: bold;
+            color: white;
+            /* background-color: rgb(0, 0, 0); */
+            font-size: 30px;
+            z-index: 3;
+            font-family: "Pixelify Sans", sans-serif;
+        }
+        #lives {
+            position: absolute;
+            top: 8.5%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+            color: white;
+            /* background-color: rgb(0, 0, 0); */
+            font-size: 30px;
+            z-index: 3;
+            font-family: "Pixelify Sans", sans-serif;
+        }
+        #moneyContainer {
+            position: absolute;
+            top: 3.5%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 30px;
+            font-weight: bold;
+            color: white;
+            /* background-color: rgb(0, 0, 0); */
+            
+            z-index: 3;
+            font-family: "Pixelify Sans", sans-serif;
+        }
+        #container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(0,0,0,0.5);
+            width: 100%;
+            height: 4%;
+        }
+        #display {
+            width: 25%;
+            height: 50%;
+            color: black;
+            background: #FFFDE8;
+            font-size: 60px;
+            text-align: center;
+            font-family: "Pixelify Sans", sans-serif;
+            border-radius: 10px;
+            border: 2px solid black;
+
+        }
+        #secondCanvas {
+            position: absolute;
+            align-items: center;
+            width: 100%;
+            height: 15%;
+            top: 85%;
+            bottom: 0;
+            display: flex;
+            justify-content: space-between;
+            background-color: #f5f5dc;
+            
+            
+        }
+        /* Define styles for power-up buttons */
+        .power-up-button {
+            height: 81%;
+            width: 8%;
+            margin-top: 2%;
+            margin-bottom: 2%;
+            border-radius: 10px;
+            border: 2px solid black;
+        }
+        #slowPU {
+            float: left;
+            text-align: center;
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 0.77vw;
+            background-color: #FFFDE8;
+
+        
+        }
+        #shieldPU {
+            float: right;
+            text-align: center;
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 0.77vw;
+            background-color: #FFFDE8;
+            
+        }
+        
+
+        /* Define styles for level buttons */
+        #lvlDOWN, #lvlUP {
+            width: 4%;
+            height: 51.5%;
+            font-size: 55px;
+            text-align: center;
+            font-family: "Pixelify Sans", sans-serif;
+            font-style: bold;
+            border-radius: 10px;
+            border: 2px solid black;
+            background-color: #FFFDE8;
+        }
+        #lvlDOWN {
+            margin-right: 0.05%;
+            margin-left: auto;
+        }
+        #lvlUP {
+            margin-right: auto;
+            margin-left: 0.05%;
+        }
+        /* Define styles for modal dialog */
+        #modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 9999;
+            text-align: center;
+            font-family: "Pixelify Sans", sans-serif;
+            color: #f5f5dc;
+            font-size: 2vw;
+
+        }
+        .modal-button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-family: "Pixelify Sans", sans-serif;
+            background-color: #FFFDE8;
+        }
+        #fPUdesc {
+            height: 80%;
+            width: 15%;
+            background-color: #FFFDE8;
+            float: left;
+            margin-left: 5%;
+            text-align: center;
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 0.85vw;
+            border-radius: 10px;
+            border: 2px solid black;
+            margin-right: 0.1%;
+        }
+        #sPUdesc {
+            height: 80%;
+            width: 15%;
+            background-color: #FFFDE8;
+            float: right;
+            margin-right: 5%;
+            text-align: center;
+            font-family: "Pixelify Sans", sans-serif;
+            font-size: 0.85vw;
+            border-radius: 10px;
+            border: 2px solid black;
+            margin-left: 0.1%;
+        }
+        .power-up-button img {
+            margin-left: auto;
+            margin-right: auto;
+            width: 90%;
+            height: 90%;
+
+        }
+        #shieldPUIndicator {
+            width: 9vw;
+            height: 3vh;
+            z-index: 1000;
+            position: absolute;
+            top: 3vh;
+            left: 0;
+            
+            color: white;
+            font-size: 1vw;
+            font-weight: bold;
+            font-family: "Pixelify Sans", sans-serif;
+        }
+        #slowPUIndicator {
+            width: 9vw;
+            height: 3vh;
+            z-index: 1000;
+            position: absolute;
+            top: 0;
+            left: 0;
+            font-size: 1vw;
+            
+            font-weight: bold;
+            font-family: "Pixelify Sans", sans-serif;
+            color: white;
+
+        }
+        #whackText {
+            position: absolute;
+            width: 31%;
+            top: 0;
+            color: white;
+            font-family: "Pixelify Sans", sans-serif;
+            z-index: 1000;
+            font-size: 2vw;
+            /* font-weight: bold; */
+            left: 34.5%;
+            right: 34.5%;
+            
+        }
+        #keybinds {
+            position: absolute;
+            width: 8%;
+            height: 8%;
+
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="shieldPUIndicator"></div>
+    <div id="slowPUIndicator"></div>
+    
+    <div id="modal">
+        <p>Game Over!</p>
+        <button class="modal-button" onclick="restartGame()">Restart</button>
+        <button class="modal-button" onclick="closeGameWindow()">End Game</button>
+    </div>
+    <div id="whackText">Whack the Moles using left click.</div>
+    <div id="secondCanvas">
+        <!-- Power-up buttons -->
+        <div id = "fPUdesc"></div>
+        <button class="power-up-button" onclick="buyslow()" id="slowPU">
+            Slow Time Power-up
+            <img src="stopwatch.png">
+            
+        </button>
+        
+        <button class="power-up-button" onclick="easier()" id="lvlDOWN"><</button>
+        <div id="display"></div>
+        <button class="power-up-button" onclick="harder()" id="lvlUP">></button>
+        <button class="power-up-button" onclick="buyshield()" id="shieldPU">
+            Shield Power-up
+            <img src="shield.png">
+        </button>
+        <div id = "sPUdesc"></div>
+    </div>
+    <div id="score">Score: 0</div>
+    <div id="moneyContainer">Coins: 0</div>
+    <div id="lives">Lives: 5</div>
+    
+    <script>
+        let w = window.innerWidth;
+        let fCh = window.innerHeight * 0.85;
+        let h = window.innerHeight;
+        let lastOccurrence = 0;
+        let cooldown = 2750;
+        let colorDuration = 0;
+        let blueDuration = 1750;
+        let cPositions = [
+            { x: w / 2.4, y: fCh / 1.9 },
+            { x: w / 10, y: fCh / 6 },
+            { x: w / 5, y: fCh / 2.5 },
+            { x: w / 1.1, y: fCh / 1.2 },
+            { x: w / 1.05, y: fCh / 11 },
+            { x: w / 1.3, y: fCh / 3.5 },
+            { x: w / 1.12, y: fCh / 1.7 },
+            { x: w / 1.37, y: fCh / 1.38 },
+            { x: w / 11.8, y: fCh / 1.4 },
+            { x: w / 4.8, y: fCh / 1.2 },
+            { x: w / 1.9, y: fCh / 1.11 },
+            { x: w / 1.55, y: fCh / 11 },
+            { x: w / 1.6, y: fCh / 1.75 },
+            { x: w / 2.8, y: fCh / 7.5 }
+        ];
+        let coloredCircle = -1;
+        let ellipseSize = 100;
+        let malletD = 50;
+        let malletX;
+        let malletY;
+        let score = 0;
+        let addtoScore = 1;
+        let lives = 5;
+        let slowsOwned = 0;
+        let shieldsOwned = 0;
+        let slowCost = 125;
+        let shieldCost = 225;
+        let money = 0;
+        let moneyGain;
+        let redEllipseImg;
+        let malletImg;
+        
+        
+
+        let difficulty = 1;
+        function easier() {
+            if (difficulty > 1) {
+                difficulty--;
+            }
+        }
+
+        function harder() {
+            if (difficulty < 5) {
+                difficulty++;
+            }
+        }
+
+        function setup() {
+            createCanvas(w, fCh);
+        }
+        function preload() {
+            redEllipseImg = loadImage('hole.png')
+            mole1 = loadImage('l1mole.png')
+            mole2 = loadImage('l2mole.png')
+            mole3 = loadImage('l3mole.png')
+            mole4 = loadImage('l4mole.png')
+            mole5 = loadImage('l5mole.png')
+            malletimg = loadImage('mallet.png')
+            bonk = loadSound('Boonk.mp3')
+        }
+        
+        function mallet() {
+            // fill("brown");
+            malletX = mouseX;
+            malletY = mouseY
+            image(malletimg, malletX - 60, malletY - 50, 100, 100);
+        }
+
+        function collideCircleEllipse(malletX, malletY, malletD, chosenX, chosenY, ellipseSize) {
+            let closestX = constrain(malletX, chosenX - ellipseSize / 2, malletX + ellipseSize / 2);
+            let closestY = constrain(malletY, chosenY - ellipseSize / 2, malletY + ellipseSize / 2);
+
+            let distanceX = malletX - closestX;
+            let distanceY = malletY - closestY;
+
+            let distanceSquared = (distanceX * distanceX) + (distanceY * distanceY)
+            return distanceSquared < (malletD * malletD)
+        }
+        
+        let originalBlueDuration;
+        let blueDurationMultiplier = 1; 
+        let shieldActive = false;
+
+        function slow() {
+            if (difficulty == 1) {
+                originalBlueDuration = 1750;
+            }
+            else if (difficulty == 2) {
+                originalBlueDuration = 1500;
+            }
+            if (difficulty == 3) {
+                originalBlueDuration = 1250;
+            }
+            if (difficulty == 4) {
+                originalBlueDuration = 1000;
+            }
+            if (difficulty == 5) {
+                originalBlueDuration = 750;
+            }
+            // Check if the 'S' key is pressed and the player has at least one freeze power-up
+            if (keyCode === 65 && slowsOwned > 0) {
+                // Multiply the blue duration by 2 
+                blueDurationMultiplier = 2;
+                blueDuration = originalBlueDuration * blueDurationMultiplier;
+                // Consume one slow power-up
+                slowsOwned--;
+                document.getElementById("slowPUIndicator").innerText = " Time Slowed!";
+                
+                // Reset the blue duration multiplier after 10 seconds 
+                setTimeout(() => {
+                    blueDurationMultiplier = 1;
+                    blueDuration = originalBlueDuration;
+
+                     // Visual indicator: Clear the message from the screen
+                    document.getElementById("slowPUIndicator").innerText = "";
+
+                    slowsUsed++
+                    
+                }, 10000);
+            }
+        }
+        
+        //No lives can be lost for a certain amount of time
+        function shield() {
+            if (keyCode === 68 && shieldsOwned > 0) {
+                // Activate the shield
+                shieldActive = true;
+                shieldsOwned--;
+                // Visual indicator: Display a message to indicate the shield is active
+                document.getElementById("shieldPUIndicator").innerText = "Shield Activated!";
+                // Set a timeout to deactivate the shield after the specified duration
+                setTimeout(() => {
+                    // Deactivate the shield
+                    shieldActive = false;
+                    // Visual indicator: Clear the message from the screen
+                    document.getElementById("shieldPUIndicator").innerText = "";
+                    shieldsUsed++
+                }, 10000);
+            }
+        }
+
+        function buyslow() {
+            if (money > slowCost) {
+                money -= slowCost
+                slowsOwned++
+                slowCost += 50
+                
+            }
+        }   
+
+        function buyshield() {
+            if (money > shieldCost) {
+                money -= shieldCost
+                shieldsOwned++
+                shieldCost += 25
+            }
+        }
+
+         // Function to restart the game
+         function restartGame() {
+            location.reload();
+        }
+        function closeGameWindow() {
+            window.close();
+        }
+        
+
+        // Check if game over condition is met
+        function checkGameOver() {
+            if (!shieldActive && lives === 0) {
+                // Display modal dialog
+                document.getElementById('modal').style.display = 'block';
+            }
+        }
+        // Load high score from localStorage
+        let highScore = localStorage.getItem('highScore');
+        if (!highScore) {
+            highScore = 0;
+        } else {
+            highScore = parseInt(highScore);
+        }
+        let slowsUsed = localStorage.getItem('slowsUsed');
+        let shieldsUsed = localStorage.getItem('shieldsUsed');
+        if (!slowsUsed) {
+            slowsUsed = 0;
+        } else {
+            slowsUsed = parseInt(slowsUsed);
+        }
+        if (!shieldsUsed) {
+            shieldsUsed = 0;
+        } else {
+            shieldsUsed = parseInt(shieldsUsed);
+        }
+
+        // Function to update high score if current score surpasses it
+        function updateHighScore() {
+            if (score > highScore) {
+                highScore = score;
+                // Update high score in localStorage
+                localStorage.setItem('highScore', highScore);
+                localStorage.setItem('slowsUsed', slowsUsed);
+                localStorage.setItem('shieldsUsed', shieldsUsed)
+            }
+        }
+        
+        function draw() {
+            bonk.setVolume(0.2)
+            document.getElementById("fPUdesc").innerText = "Press (A) to activate. Upon activation, you will have double the time to hit the moles for 10 seconds. Current Price is " + slowCost + " coins. (Price increases by 50 coins each purchase.)"
+            document.getElementById("sPUdesc").innerText = "Press (D) to activate. Upon activation, you will not be able to lose any lives for 10 seconds. Current Price is " + shieldCost + " coins. (Price increases by 25 coins each purchase.)"
+             // Calculate the actual blue duration by multiplying the original duration with the multiplier
+            let actualBlueDuration = originalBlueDuration * blueDurationMultiplier;
+            document.getElementById("display").innerText = "Difficulty: " + difficulty;1
+            if (difficulty == 1) {
+                addtoScore = 1;
+                blueDuration = 1750;
+                cooldown = 2500;
+                moneyGain = 5;
+            }
+            else if (difficulty == 2) {
+                addtoScore = 2;
+                blueDuration = 1500;
+                cooldown = 2250;
+                MoneyGain = 10;
+
+            }
+            else if (difficulty == 3) {
+                addtoScore = 5;
+                blueDuration = 1250;
+                cooldown = 2125;
+                moneyGain = 15;
+            }
+            else if (difficulty == 4) {
+                addtoScore = 10;
+                blueDuration = 1000;
+                cooldown = 2000;
+                moneyGain = 20;
+            }
+            else if (difficulty == 5) {
+                addtoScore = 20;
+                blueDuration = 750;
+                cooldown = 1751;
+                moneyGain = 25;
+            }
+            slow();
+            shield();
+            let chosenX;
+            let chosenY;
+            if (coloredCircle !== -1) {
+                chosenX = cPositions[coloredCircle].x;
+                chosenY = cPositions[coloredCircle].y;
+            }
+
+            clear();
+            
+            for (let i = 0; i < cPositions.length; i++) {
+                // Adjust the position of the image to align with the center of the ellipse
+                let adjustedX = cPositions[i].x - redEllipseImg.width / 2;
+                let adjustedY = cPositions[i].y - redEllipseImg.height / 2;
+                image(redEllipseImg, adjustedX, adjustedY, ellipseSize, ellipseSize);
+            }
+
+            let collision = collideCircleEllipse(malletX, malletY, malletD, chosenX, chosenY, ellipseSize);
+
+            if (coloredCircle !== -1) {
+                if (millis() - lastOccurrence > colorDuration + blueDuration) {
+                    // Adjust the position of the image to align with the center of the ellipse
+                    let OadjustedX = cPositions[coloredCircle].x - redEllipseImg.width / 2;
+                    let OadjustedY = cPositions[coloredCircle].y - redEllipseImg.height / 2;
+                    image(redEllipseImg, OadjustedX, OadjustedY, ellipseSize, ellipseSize);
+                    coloredCircle = -1;
+                    if (shieldActive != true) {
+                        lives--;
+                    }
+                    
+                    document.getElementById("lives").innerText = "Lives: " + lives;
+                } else if (mouseIsPressed && collision) {
+                    document.getElementById("whackText").innerText = ""
+                    // Adjust the position of the image to align with the center of the ellipse
+                    let OadjustedX = cPositions[coloredCircle].x - redEllipseImg.width / 2;
+                    let OadjustedY = cPositions[coloredCircle].y - redEllipseImg.height / 2;
+                    image(redEllipseImg, OadjustedX, OadjustedY, ellipseSize, ellipseSize);
+                    bonk.play()
+                    score += addtoScore;
+                    money += moneyGain;
+                    document.getElementById("score").innerText = "Score: " + score;
+                    coloredCircle = -1;
+                }
+            }
+
+            if (millis() - lastOccurrence > cooldown) {
+                coloredCircle = floor(random(14));
+                lastOccurrence = millis();
+            }
+
+            if (coloredCircle !== -1 && millis() - lastOccurrence > colorDuration) {
+                let moleX = cPositions[coloredCircle].x - 40;
+                let moleY = cPositions[coloredCircle].y - 45;
+                if (difficulty === 1) {
+                    image(mole1, moleX, moleY, 90)
+                }
+                else if (difficulty === 2) {
+                    image(mole2, moleX, moleY, 90)
+                }
+                else if (difficulty === 3) {
+                    image(mole3, moleX, moleY, 90)
+                }
+                else if (difficulty === 4) {
+                    image(mole4, moleX, moleY, 90)
+                }
+                else if (difficulty === 5) {
+                    image(mole5, moleX, moleY-40, 90)
+                }
+                // ellipse(cPositions[coloredCircle].x, cPositions[coloredCircle].y, 90);
+            }
+            
+            mallet();
+
+            
+            
+            document.getElementById("moneyContainer").innerText = "Coins: " + money
+            
+            // Check if game over condition is met
+            checkGameOver();
+            updateHighScore();
+
+        }
+    </script>
+</body>
+</html>
