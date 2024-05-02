@@ -28,35 +28,34 @@
         }
         #score {
             position: absolute;
-            top: 6%;
-            left: 50%;
+            top: 6vh;
+            left: 50vw;
             transform: translateX(-50%);
-            font-size: 30px;
             font-weight: bold;
             color: white;
             /* background-color: rgb(0, 0, 0); */
-            font-size: 30px;
+            font-size: 1.6vw;
             z-index: 3;
             font-family: "Pixelify Sans", sans-serif;
         }
         #lives {
             position: absolute;
-            top: 8.5%;
-            left: 50%;
+            top: 8.5vh;
+            left: 50vw;
             transform: translateX(-50%);
             font-weight: bold;
             color: white;
             /* background-color: rgb(0, 0, 0); */
-            font-size: 30px;
+            font-size: 1.6vw;
             z-index: 3;
             font-family: "Pixelify Sans", sans-serif;
         }
         #moneyContainer {
             position: absolute;
-            top: 3.5%;
-            left: 50%;
+            top: 3.5vh;
+            left: 50vw;
             transform: translateX(-50%);
-            font-size: 30px;
+            font-size: 1.6vw;
             font-weight: bold;
             color: white;
             /* background-color: rgb(0, 0, 0); */
@@ -73,15 +72,15 @@
             height: 4%;
         }
         #display {
-            width: 25%;
-            height: 50%;
+            width: 25vw;
+            height: 8vh;
             color: black;
             background: #FFFDE8;
-            font-size: 60px;
+            font-size: 3.5vw;
             text-align: center;
             font-family: "Pixelify Sans", sans-serif;
-            border-radius: 10px;
-            border: 2px solid black;
+            border-radius: 0.5vw;
+            border: 0.15vw solid black;
 
         }
         #secondCanvas {
@@ -99,12 +98,12 @@
         }
         /* Define styles for power-up buttons */
         .power-up-button {
-            height: 81%;
-            width: 8%;
+            height: 12.5vh;
+            width: 8vw;
             margin-top: 2%;
             margin-bottom: 2%;
-            border-radius: 10px;
-            border: 2px solid black;
+            border-radius: 0.5vw;
+            border: 0.15vw solid black;
         }
         #slowPU {
             float: left;
@@ -127,14 +126,14 @@
 
         /* Define styles for level buttons */
         #lvlDOWN, #lvlUP {
-            width: 4%;
-            height: 51.5%;
-            font-size: 55px;
+            width: 4vw;
+            height: 8.5vh;
+            font-size: 3.5vw;
             text-align: center;
             font-family: "Pixelify Sans", sans-serif;
             font-style: bold;
-            border-radius: 10px;
-            border: 2px solid black;
+            border-radius: 0.5vw;
+            border: 0.15vw solid black;
             background-color: #FFFDE8;
         }
         #lvlDOWN {
@@ -172,29 +171,29 @@
             background-color: #FFFDE8;
         }
         #fPUdesc {
-            height: 80%;
-            width: 15%;
+            height: 12vh;
+            width: 16vw;
             background-color: #FFFDE8;
             float: left;
             margin-left: 5%;
             text-align: center;
             font-family: "Pixelify Sans", sans-serif;
             font-size: 0.85vw;
-            border-radius: 10px;
-            border: 2px solid black;
+            border-radius: 0.5vw;
+            border: 0.15vw solid black;
             margin-right: 0.1%;
         }
         #sPUdesc {
-            height: 80%;
-            width: 15%;
+            height: 12vh;
+            width: 16vw;
             background-color: #FFFDE8;
             float: right;
             margin-right: 5%;
             text-align: center;
             font-family: "Pixelify Sans", sans-serif;
             font-size: 0.85vw;
-            border-radius: 10px;
-            border: 2px solid black;
+            border-radius: 0.5vw;
+            border: 0.15vw solid black;
             margin-left: 0.1%;
         }
         .power-up-button img {
@@ -233,26 +232,50 @@
         }
         #whackText {
             position: absolute;
-            width: 31%;
+            /* background-color: red; */
+            width: 31vw;
             top: 0;
             color: white;
             font-family: "Pixelify Sans", sans-serif;
             z-index: 1000;
             font-size: 2vw;
             /* font-weight: bold; */
-            left: 34.5%;
-            right: 34.5%;
+            left: 35vw;
             
         }
-        #keybinds {
+        #slowAmount {
+            width: 12vw;
+            height: 3vh;
+            /* background-color: red; */
+            font-size: 1.3vw;
+            color: white;
+            font-family: "Pixelify Sans", sans-serif;
+            z-index: 999;
             position: absolute;
-            width: 8%;
-            height: 8%;
+            top: auto;
+            left: 0vw;
+            bottom: 15vh;
 
+        }
+        #shieldAmount {
+            width: 12vw;
+            height: 3vh;
+            /* background-color: blue; */
+            font-size: 1.3vw;
+            color: white;
+            font-family: "Pixelify Sans", sans-serif;
+            top: auto;
+            right: auto;
+            left: 12vw;
+            bottom: 15vh;
+            z-index: 999;
+            position: absolute;
         }
     </style>
 </head>
 <body>
+    <div id = "slowAmount"></div>
+    <div id = "shieldAmount"></div>
     
     <div id="shieldPUIndicator"></div>
     <div id="slowPUIndicator"></div>
@@ -455,9 +478,6 @@
          function restartGame() {
             location.reload();
         }
-        function closeGameWindow() {
-            window.close();
-        }
         
 
         // Check if game over condition is met
@@ -613,11 +633,11 @@
             
             
             document.getElementById("moneyContainer").innerText = "Coins: " + money
-            
+            document.getElementById("slowAmount").innerText = "Slow Power-Ups: " + slowsOwned
+            document.getElementById("shieldAmount").innerText = "Shield Power-Ups: " + shieldsOwned
             // Check if game over condition is met
             checkGameOver();
             updateHighScore();
-            closeGameWindow();
 
         }
     </script>
